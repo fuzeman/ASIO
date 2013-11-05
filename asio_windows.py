@@ -1,4 +1,5 @@
 from asio_base import BaseASIO, BaseFile, DEFAULT_BUFFER_SIZE
+import os
 
 if os.name == 'nt':
     from ctypes.wintypes import *
