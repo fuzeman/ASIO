@@ -23,7 +23,7 @@ class PosixASIO(BaseASIO):
         return PosixFile(file_path, open(file_path, *parameters))
 
     @classmethod
-    def size(cls, fp):
+    def get_size(cls, fp):
         """
         :type fp: PosixFile
         :rtype: int
@@ -63,7 +63,7 @@ class PosixFile(BaseFile):
         """
 
         :type file_path: str
-        :type file_object: file
+        :type file_object: FileIO
         """
         self.file_path = file_path
         self.file = file_object

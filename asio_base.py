@@ -18,7 +18,11 @@ class BaseASIO(object):
         raise NotImplementedError()
 
     @classmethod
-    def size(cls, fp):
+    def get_size(cls, fp):
+        raise NotImplementedError()
+
+    @classmethod
+    def get_path(cls, fp):
         raise NotImplementedError()
 
     @classmethod
@@ -46,12 +50,19 @@ class BaseFile(object):
 
         return self.platform_handler
 
-    def size(self):
+    def get_size(self):
         """Get the current file size
 
         :rtype: int
         """
-        return self.get_handler().size(self)
+        return self.get_handler().get_size(self)
+
+    def get_path(self):
+        """Get the path of this file
+
+        :rtype: str
+        """
+        return self.get_handler().get_path(self)
 
     def seek(self, offset, origin):
         """Sets a reference point of a file to the given value.

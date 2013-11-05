@@ -37,12 +37,29 @@ class WindowsASIO(BaseASIO):
         return WindowsFile(h)
 
     @classmethod
-    def size(cls, fp):
+    def get_size(cls, fp):
         """
         :type fp: WindowsFile:
         :rtype: int
         """
         return WindowsInterop.get_file_size(fp.handle)
+
+    @classmethod
+    def get_path(cls, fp):
+        """
+        :type fp: WindowsFile:
+        :rtype: str
+        """
+
+        if not fp.file_map:
+            fp.file_map = WindowsInterop.create_file_mapping(fp.handle, WindowsASIO.Protection.READONLY)
+
+        if not fp.map_view:
+            fp.map_view = WindowsInterop.map_view_of_file(fp.file_map, WindowsASIO.FileMapAccess.READ, 1)
+
+        file_name = WindowsInterop.get_mapped_file_name(fp.map_view)
+
+        return file_name
 
     @classmethod
     def seek(cls, fp, offset, origin):
@@ -87,6 +104,12 @@ class WindowsASIO(BaseASIO):
         :type fp: WindowsFile
         :rtype: bool
         """
+        if fp.map_view:
+            WindowsInterop.unmap_view_of_file(fp.map_view)
+
+        if fp.file_map:
+            WindowsInterop.close_handle(fp.file_map)
+
         return bool(WindowsInterop.close_handle(fp.handle))
 
     class GenericAccess(object):
@@ -163,6 +186,9 @@ class WindowsFile(BaseFile):
 
     def __init__(self, handle):
         self.handle = handle
+
+        self.file_map = None
+        self.map_view = None
 
     def __str__(self):
         return "<asio_windows.WindowsFile file: %s>" % self.handle

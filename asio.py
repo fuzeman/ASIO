@@ -67,7 +67,7 @@ class OpenParameters(object):
         }})
 
     def windows(self,
-                desired_access=WindowsASIO.DesiredAccess.READ,
+                desired_access=WindowsASIO.GenericAccess.READ,
                 share_mode=WindowsASIO.ShareMode.ALL,
                 creation_disposition=WindowsASIO.CreationDisposition.OPEN_EXISTING,
                 flags_and_attributes=0):
@@ -116,15 +116,18 @@ class FileOpener(object):
         self.file.close()
         self.file = None
 
+
 def read(path):
     with ASIO.open(path) as f:
-        size = f.size()
+        orig_path = f.get_path()
+
+        size = f.get_size()
         print "Seeking to end, %s" % size
         print f.seek(size, SEEK_ORIGIN_CURRENT)
 
         while True:
             line = f.read_line(timeout=1, timeout_type='return')
-            if not line:
+            if not line and f.get_path() != orig_path:
                 return
 
             print line
