@@ -1,6 +1,7 @@
 from asio_base import SEEK_ORIGIN_CURRENT
 from asio_windows import WindowsASIO
 from asio_posix import PosixASIO
+import sys
 import os
 
 
@@ -113,7 +114,31 @@ class FileOpener(object):
         self.file = None
 
 if __name__ == '__main__':
-    path = "C:\\Users\\Gardi_000\\AppData\\Local\\Plex Media Server\\Logs\\Plex Media Server.log"
+    log_path_components = ['Plex Media Server', 'Logs', 'Plex Media Server.log']
+
+    path = None
+
+    if len(sys.argv) >= 2:
+        path = sys.argv[1]
+    else:
+        base_path = None
+
+        if os.name == 'nt':
+            base_path = os.environ.get('LOCALAPPDATA')
+        elif os.name == 'posix':
+            base_path = '/var/lib/plexmediaserver/Library/Application Support'
+
+        path = os.path.join(base_path, *log_path_components)
+
+    print 'Path: "%s"' % path
+
+    if not os.path.exists(path):
+        print 'File at "%s" not found' % path
+        path = None
+
+    if not path:
+        print 'Unknown path for "%s"' % os.name
+        exit()
 
     params = OpenParameters()
 
