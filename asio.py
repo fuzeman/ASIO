@@ -35,6 +35,9 @@ class ASIO(object):
 
         :rtype: BaseFile
         """
+        if not parameters:
+            parameters = OpenParameters()
+
 
         if opener:
             return FileOpener(file_path, parameters)
