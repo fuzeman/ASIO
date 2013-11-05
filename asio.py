@@ -143,8 +143,6 @@ if __name__ == '__main__':
     params = OpenParameters()
 
     with ASIO.open(path, parameters=params) as f:
-        print "Handle: %s" % f.handle
-
         size = f.size()
         print "Seeking to end, %s" % size
         print f.seek(size, SEEK_ORIGIN_CURRENT)
