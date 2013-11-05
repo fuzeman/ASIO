@@ -12,13 +12,15 @@ class PosixASIO(BaseASIO):
         if not parameters:
             parameters = {}
 
+        if not parameters.get('mode'):
+            parameters.pop('mode')
+
+        if not parameters.get('buffering'):
+            parameters.pop('buffering')
+
         print parameters
 
-        return PosixFile(file_path, open(
-            file_path,
-            parameters.get('mode'),
-            parameters.get('buffering')
-        ))
+        return PosixFile(file_path, open(file_path, *parameters))
 
     @classmethod
     def size(cls, fp):
