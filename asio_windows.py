@@ -1,9 +1,11 @@
 from asio_base import BaseASIO, BaseFile, DEFAULT_BUFFER_SIZE
-from ctypes.wintypes import *
-from ctypes import *
 
+if os.name == 'nt':
+    from ctypes.wintypes import *
+    from ctypes import *
 
-LPSECURITY_ATTRIBUTES = c_void_p
+    LPSECURITY_ATTRIBUTES = c_void_p
+
 NULL = 0
 
 
