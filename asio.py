@@ -116,6 +116,19 @@ class FileOpener(object):
         self.file.close()
         self.file = None
 
+def read(path):
+    with ASIO.open(path) as f:
+        size = f.size()
+        print "Seeking to end, %s" % size
+        print f.seek(size, SEEK_ORIGIN_CURRENT)
+
+        while True:
+            line = f.read_line(timeout=1, timeout_type='return')
+            if not line:
+                return
+
+            print line
+
 if __name__ == '__main__':
     log_path_components = ['Plex Media Server', 'Logs', 'Plex Media Server.log']
 
@@ -143,14 +156,6 @@ if __name__ == '__main__':
         print 'Unknown path for "%s"' % os.name
         exit()
 
-    params = OpenParameters()
-
-    with ASIO.open(path, parameters=params) as f:
-        size = f.size()
-        print "Seeking to end, %s" % size
-        print f.seek(size, SEEK_ORIGIN_CURRENT)
-
-        while True:
-            line = f.read_line(timeout=1, timeout_type='return')
-
-            print line
+    while True:
+        read(path)
+        print 'file timeout, re-opening'
