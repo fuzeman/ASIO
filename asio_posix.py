@@ -20,7 +20,7 @@ class PosixASIO(BaseASIO):
 
         print parameters
 
-        return PosixFile(file_path, open(file_path, *parameters))
+        return PosixFile(open(file_path, *parameters))
 
     @classmethod
     def get_size(cls, fp):
@@ -28,7 +28,15 @@ class PosixASIO(BaseASIO):
         :type fp: PosixFile
         :rtype: int
         """
-        return os.path.getsize(fp.file_path)
+        return os.path.getsize(cls.get_path(fp))
+
+    @classmethod
+    def get_path(cls, fp):
+        """
+        :type fp: PosixFile
+        :rtype: int
+        """
+        return fp.file.name
 
     @classmethod
     def seek(cls, fp, offset, origin):
@@ -59,13 +67,10 @@ class PosixASIO(BaseASIO):
 class PosixFile(BaseFile):
     platform_handler = PosixASIO
 
-    def __init__(self, file_path, file_object):
+    def __init__(self, file_object):
         """
-
-        :type file_path: str
         :type file_object: FileIO
         """
-        self.file_path = file_path
         self.file = file_object
 
     def __str__(self):
