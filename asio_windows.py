@@ -8,6 +8,7 @@ if os.name == 'nt':
     LPSECURITY_ATTRIBUTES = c_void_p
 
 NULL = 0
+MAX_PATH = 260
 
 
 class WindowsASIO(BaseASIO):
