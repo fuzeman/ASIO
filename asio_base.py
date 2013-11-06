@@ -95,7 +95,7 @@ class BaseFile(object):
         while not len(line_buf) or line_buf[-1] != '\n':
             ch = self.read(1)
 
-            if ch is None:
+            if not ch:
                 if timeout:
                     # Check if we have exceeded the timeout
                     if stale_since and (time.time() - stale_since) > timeout:

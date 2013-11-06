@@ -24,7 +24,7 @@ class PosixASIO(BaseASIO):
 
         print parameters
 
-        fd = os.open(file_path, os.O_RDONLY)
+        fd = os.open(file_path, os.O_RDONLY | os.O_NONBLOCK)
 
         return PosixFile(fd)
 
