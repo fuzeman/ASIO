@@ -1,6 +1,9 @@
 from asio_base import BaseASIO, DEFAULT_BUFFER_SIZE, BaseFile
 import os
 
+if os.name == 'posix':
+    import fcntl
+
 
 class PosixASIO(BaseASIO):
     @classmethod
@@ -20,7 +23,13 @@ class PosixASIO(BaseASIO):
 
         print parameters
 
-        return PosixFile(open(file_path, *parameters))
+        f = open(file_path, *parameters)
+
+        fd = f.fileno()
+        fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+        fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+
+        return PosixFile(f)
 
     @classmethod
     def get_size(cls, fp):
