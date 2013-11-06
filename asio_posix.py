@@ -3,6 +3,7 @@ import os
 
 if os.name == 'posix':
     import fcntl
+    import select
 
 
 class PosixASIO(BaseASIO):
@@ -63,7 +64,12 @@ class PosixASIO(BaseASIO):
         :type buf_size: int
         :rtype: str
         """
-        return fp.file.read(buf_size)
+        r, w, x = select.select([fp.file], [], [], 5)
+
+        if r:
+            return fp.file.read(buf_size)
+
+        return None
 
     @classmethod
     def close(cls, fp):
