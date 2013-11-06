@@ -24,13 +24,9 @@ class PosixASIO(BaseASIO):
 
         print parameters
 
-        f = open(file_path, *parameters)
+        fd = os.open(file_path, os.O_RDONLY)
 
-        fd = f.fileno()
-        fl = fcntl.fcntl(fd, fcntl.F_GETFL)
-        fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
-
-        return PosixFile(f)
+        return PosixFile(fd)
 
     @classmethod
     def get_size(cls, fp):
@@ -38,7 +34,7 @@ class PosixASIO(BaseASIO):
         :type fp: PosixFile
         :rtype: int
         """
-        return os.path.getsize(cls.get_path(fp))
+        return os.fstat(fp.fd).st_size
 
     @classmethod
     def get_path(cls, fp):
@@ -46,7 +42,7 @@ class PosixASIO(BaseASIO):
         :type fp: PosixFile
         :rtype: int
         """
-        return fp.file.name
+        return os.readlink("/proc/self/fd/%s" % fp.fd)
 
     @classmethod
     def seek(cls, fp, offset, origin):
@@ -55,7 +51,7 @@ class PosixASIO(BaseASIO):
         :type offset: int
         :type origin: int
         """
-        fp.file.seek(offset, origin)
+        os.lseek(fp.fd, offset, origin)
 
     @classmethod
     def read(cls, fp, buf_size=DEFAULT_BUFFER_SIZE):
@@ -64,10 +60,10 @@ class PosixASIO(BaseASIO):
         :type buf_size: int
         :rtype: str
         """
-        r, w, x = select.select([fp.file], [], [], 5)
+        r, w, x = select.select([fp.fd], [], [], 5)
 
         if r:
-            return fp.file.read(buf_size)
+            return os.read(fp.fd, buf_size)
 
         return None
 
@@ -76,17 +72,17 @@ class PosixASIO(BaseASIO):
         """
         :type fp: PosixFile
         """
-        fp.file.close()
+        os.close(fp.fd)
 
 
 class PosixFile(BaseFile):
     platform_handler = PosixASIO
 
-    def __init__(self, file_object):
+    def __init__(self, fd):
         """
         :type file_object: FileIO
         """
-        self.file = file_object
+        self.fd = fd
 
     def __str__(self):
-        return "<asio_posix.PosixFile file: %s>" % self.file
+        return "<asio_posix.PosixFile file: %s>" % self.fd
