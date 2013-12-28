@@ -132,7 +132,7 @@ class FileOpener(object):
 
 
 def read(path):
-    f = ASIO.open(path)
+    f = ASIO.open(path, opener=False)
     orig_path = f.get_path()
 
     size = f.get_size()
