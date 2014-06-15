@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from asio.file import BaseFile, DEFAULT_BUFFER_SIZE
-from asio.interfaces.base import BaseASIO
+from asio.file import File, DEFAULT_BUFFER_SIZE
+from asio.interfaces.base import Interface
 
 import sys
 import os
@@ -28,7 +28,7 @@ if os.name == 'posix':
 F_GETPATH = 50
 
 
-class PosixASIO(BaseASIO):
+class PosixInterface(Interface):
     @classmethod
     def open(cls, file_path, parameters=None):
         """
@@ -105,8 +105,8 @@ class PosixASIO(BaseASIO):
         os.close(fp.fd)
 
 
-class PosixFile(BaseFile):
-    platform_handler = PosixASIO
+class PosixFile(File):
+    platform_handler = PosixInterface
 
     def __init__(self, fd):
         """

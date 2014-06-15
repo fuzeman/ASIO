@@ -13,8 +13,10 @@
 # limitations under the License.
 
 from asio.file import SEEK_ORIGIN_CURRENT
-from asio.interfaces.posix import PosixASIO
-from asio.interfaces.windows import WindowsASIO
+from asio.file_opener import FileOpener
+from asio.open_parameters import OpenParameters
+from asio.interfaces.posix import PosixInterface
+from asio.interfaces.windows import WindowsInterface
 
 import os
 
@@ -28,9 +30,9 @@ class ASIO(object):
             return cls.platform_handler
 
         if os.name == 'nt':
-            cls.platform_handler = WindowsASIO
+            cls.platform_handler = WindowsInterface
         elif os.name == 'posix':
-            cls.platform_handler = PosixASIO
+            cls.platform_handler = PosixInterface
         else:
             raise NotImplementedError()
 
@@ -45,7 +47,7 @@ class ASIO(object):
         :param opener: Use FileOpener, for use with the 'with' statement
         :type opener: bool
 
-        :rtype: BaseFile
+        :rtype: asio.file.File
         """
         if not parameters:
             parameters = OpenParameters()
@@ -57,72 +59,3 @@ class ASIO(object):
             file_path,
             parameters=parameters.handlers.get(ASIO.get_handler())
         )
-
-
-class OpenParameters(object):
-    def __init__(self):
-        self.handlers = {}
-
-        # Update handler_parameters with defaults
-        self.posix()
-        self.windows()
-
-    def posix(self, mode=None, buffering=None):
-        """
-        :type mode: str
-        :type buffering: int
-        """
-        self.handlers.update({PosixASIO: {
-            'mode': mode,
-            'buffering': buffering
-        }})
-
-    def windows(self,
-                desired_access=WindowsASIO.GenericAccess.READ,
-                share_mode=WindowsASIO.ShareMode.ALL,
-                creation_disposition=WindowsASIO.CreationDisposition.OPEN_EXISTING,
-                flags_and_attributes=0):
-
-        """
-        :param desired_access: WindowsASIO.DesiredAccess
-        :type desired_access: int
-
-        :param share_mode: WindowsASIO.ShareMode
-        :type share_mode: int
-
-        :param creation_disposition: WindowsASIO.CreationDisposition
-        :type creation_disposition: int
-
-        :param flags_and_attributes: WindowsASIO.Attribute, WindowsASIO.Flag
-        :type flags_and_attributes: int
-        """
-
-        self.handlers.update({WindowsASIO: {
-            'desired_access': desired_access,
-            'share_mode': share_mode,
-            'creation_disposition': creation_disposition,
-            'flags_and_attributes': flags_and_attributes
-        }})
-
-
-class FileOpener(object):
-    def __init__(self, file_path, parameters=None):
-        self.file_path = file_path
-        self.parameters = parameters
-
-        self.file = None
-
-    def __enter__(self):
-        self.file = ASIO.get_handler().open(
-            self.file_path,
-            self.parameters.handlers.get(ASIO.get_handler())
-        )
-
-        return self.file
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if not self.file:
-            return
-
-        self.file.close()
-        self.file = None

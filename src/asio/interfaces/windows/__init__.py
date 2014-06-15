@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from asio.file import BaseFile, DEFAULT_BUFFER_SIZE
-from asio.interfaces.base import BaseASIO
+from asio.file import File, DEFAULT_BUFFER_SIZE
+from asio.interfaces.base import Interface
 
 import os
 
@@ -24,7 +24,7 @@ if os.name == 'nt':
     from asio.interfaces.windows.interop import WindowsInterop
 
 
-class WindowsASIO(BaseASIO):
+class WindowsInterface(Interface):
     @classmethod
     def open(cls, file_path, parameters=None):
         """
@@ -36,9 +36,9 @@ class WindowsASIO(BaseASIO):
 
         return WindowsFile(WindowsInterop.create_file(
             file_path,
-            parameters.get('desired_access', WindowsASIO.GenericAccess.READ),
-            parameters.get('share_mode', WindowsASIO.ShareMode.ALL),
-            parameters.get('creation_disposition', WindowsASIO.CreationDisposition.OPEN_EXISTING),
+            parameters.get('desired_access', WindowsInterface.GenericAccess.READ),
+            parameters.get('share_mode', WindowsInterface.ShareMode.ALL),
+            parameters.get('creation_disposition', WindowsInterface.CreationDisposition.OPEN_EXISTING),
             parameters.get('flags_and_attributes', NULL)
         ))
 
@@ -58,10 +58,10 @@ class WindowsASIO(BaseASIO):
         """
 
         if not fp.file_map:
-            fp.file_map = WindowsInterop.create_file_mapping(fp.handle, WindowsASIO.Protection.READONLY)
+            fp.file_map = WindowsInterop.create_file_mapping(fp.handle, WindowsInterface.Protection.READONLY)
 
         if not fp.map_view:
-            fp.map_view = WindowsInterop.map_view_of_file(fp.file_map, WindowsASIO.FileMapAccess.READ, 1)
+            fp.map_view = WindowsInterop.map_view_of_file(fp.file_map, WindowsInterface.FileMapAccess.READ, 1)
 
         file_name = WindowsInterop.get_mapped_file_name(fp.map_view)
 
@@ -174,8 +174,8 @@ class WindowsASIO(BaseASIO):
         EXECUTE = 0x0020
 
 
-class WindowsFile(BaseFile):
-    platform_handler = WindowsASIO
+class WindowsFile(File):
+    platform_handler = WindowsInterface
 
     def __init__(self, handle):
         self.handle = handle

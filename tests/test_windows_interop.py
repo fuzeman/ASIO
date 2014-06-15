@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from asio.interfaces.windows import WindowsASIO, WindowsInterop
+from asio.interfaces.windows import WindowsInterface, WindowsInterop
 
 NULL = 0
 
@@ -25,17 +25,17 @@ if __name__ == '__main__':
 
     file_handle = WindowsInterop.create_file(
         file_path,
-        WindowsASIO.GenericAccess.READ,
-        WindowsASIO.ShareMode.ALL,
-        WindowsASIO.CreationDisposition.OPEN_EXISTING,
+        WindowsInterface.GenericAccess.READ,
+        WindowsInterface.ShareMode.ALL,
+        WindowsInterface.CreationDisposition.OPEN_EXISTING,
         NULL
     )
     print "file_handle", file_handle
 
-    map_handle = WindowsInterop.create_file_mapping(file_handle, WindowsASIO.Protection.READONLY)
+    map_handle = WindowsInterop.create_file_mapping(file_handle, WindowsInterface.Protection.READONLY)
     print "map_handle", map_handle
 
-    view_handle = WindowsInterop.map_view_of_file(map_handle, WindowsASIO.FileMapAccess.READ, 1)
+    view_handle = WindowsInterop.map_view_of_file(map_handle, WindowsInterface.FileMapAccess.READ, 1)
     print "map_view", view_handle
 
     file_name = WindowsInterop.get_mapped_file_name(view_handle)

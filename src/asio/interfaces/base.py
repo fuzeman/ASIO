@@ -15,7 +15,7 @@
 from asio.file import DEFAULT_BUFFER_SIZE
 
 
-class BaseASIO(object):
+class Interface(object):
     @classmethod
     def open(cls, file_path, parameters=None):
         raise NotImplementedError()

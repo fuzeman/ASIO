@@ -25,7 +25,7 @@ class ReadTimeoutError(Exception):
     pass
 
 
-class BaseFile(object):
+class File(object):
     platform_handler = None
 
     def get_handler(self):
