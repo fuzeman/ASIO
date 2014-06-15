@@ -29,7 +29,7 @@ class WindowsInterface(Interface):
     def open(cls, file_path, parameters=None):
         """
         :type file_path: str
-        :rtype: WindowsFile
+        :rtype: asio.interfaces.windows.WindowsFile
         """
         if not parameters:
             parameters = {}
@@ -45,7 +45,7 @@ class WindowsInterface(Interface):
     @classmethod
     def get_size(cls, fp):
         """
-        :type fp: WindowsFile:
+        :type fp: asio.interfaces.windows.WindowsFile
         :rtype: int
         """
         return WindowsInterop.get_file_size(fp.handle)
@@ -53,7 +53,7 @@ class WindowsInterface(Interface):
     @classmethod
     def get_path(cls, fp):
         """
-        :type fp: WindowsFile:
+        :type fp: asio.interfaces.windows.WindowsFile
         :rtype: str
         """
 
@@ -70,7 +70,7 @@ class WindowsInterface(Interface):
     @classmethod
     def seek(cls, fp, offset, origin):
         """
-        :type fp: WindowsFile
+        :type fp: asio.interfaces.windows.WindowsFile
         :type offset: int
         :type origin: int
         :rtype: int
@@ -85,7 +85,7 @@ class WindowsInterface(Interface):
     @classmethod
     def read(cls, fp, buf_size=DEFAULT_BUFFER_SIZE):
         """
-        :type fp: WindowsFile
+        :type fp: asio.interfaces.windows.WindowsFile
         :type buf_size: int
         :rtype: str
         """
@@ -94,7 +94,7 @@ class WindowsInterface(Interface):
     @classmethod
     def close(cls, fp):
         """
-        :type fp: WindowsFile
+        :type fp: asio.interfaces.windows.WindowsFile
         :rtype: bool
         """
         if fp.map_view:

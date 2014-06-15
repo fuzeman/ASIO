@@ -30,7 +30,7 @@ class File(object):
 
     def get_handler(self):
         """
-        :rtype: BaseASIO
+        :rtype: asio.interfaces.base.Interface
         """
         if not self.platform_handler:
             raise ValueError()

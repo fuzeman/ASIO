@@ -26,16 +26,16 @@ class OpenParameters(object):
                 flags_and_attributes=0):
 
         """
-        :param desired_access: WindowsASIO.DesiredAccess
+        :param desired_access: WindowsInterface.DesiredAccess
         :type desired_access: int
 
-        :param share_mode: WindowsASIO.ShareMode
+        :param share_mode: WindowsInterface.ShareMode
         :type share_mode: int
 
-        :param creation_disposition: WindowsASIO.CreationDisposition
+        :param creation_disposition: WindowsInterface.CreationDisposition
         :type creation_disposition: int
 
-        :param flags_and_attributes: WindowsASIO.Attribute, WindowsASIO.Flag
+        :param flags_and_attributes: WindowsInterface.Attribute, WindowsInterface.Flag
         :type flags_and_attributes: int
         """
 
