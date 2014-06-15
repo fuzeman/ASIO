@@ -12,13 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from asio_base import BaseASIO, BaseFile, DEFAULT_BUFFER_SIZE
+from asio.file import BaseFile, DEFAULT_BUFFER_SIZE
+from asio.interfaces.base import BaseASIO
+
 import os
+
 
 NULL = 0
 
 if os.name == 'nt':
-    from asio_windows_interop import WindowsInterop
+    from asio.interfaces.windows.interop import WindowsInterop
 
 
 class WindowsASIO(BaseASIO):

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from asio_windows import WindowsASIO, WindowsInterop
+from asio.interfaces.windows import WindowsASIO, WindowsInterop
 
 NULL = 0
 

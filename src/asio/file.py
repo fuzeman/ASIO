@@ -16,7 +16,6 @@ import time
 
 DEFAULT_BUFFER_SIZE = 4096
 
-
 SEEK_ORIGIN_BEGIN = 0
 SEEK_ORIGIN_CURRENT = 1
 SEEK_ORIGIN_END = 2
@@ -24,32 +23,6 @@ SEEK_ORIGIN_END = 2
 
 class ReadTimeoutError(Exception):
     pass
-
-
-class BaseASIO(object):
-    @classmethod
-    def open(cls, file_path, parameters=None):
-        raise NotImplementedError()
-
-    @classmethod
-    def get_size(cls, fp):
-        raise NotImplementedError()
-
-    @classmethod
-    def get_path(cls, fp):
-        raise NotImplementedError()
-
-    @classmethod
-    def seek(cls, fp, pointer, distance):
-        raise NotImplementedError()
-
-    @classmethod
-    def read(cls, fp, buf_size=DEFAULT_BUFFER_SIZE):
-        raise NotImplementedError()
-
-    @classmethod
-    def close(cls, fp):
-        raise NotImplementedError()
 
 
 class BaseFile(object):

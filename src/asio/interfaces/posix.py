@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from asio_base import BaseASIO, DEFAULT_BUFFER_SIZE, BaseFile
+from asio.file import BaseFile, DEFAULT_BUFFER_SIZE
+from asio.interfaces.base import BaseASIO
+
 import sys
 import os
 
