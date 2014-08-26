@@ -88,9 +88,7 @@ class WindowsInterop(object):
         b[:bytes_read] = cls.ri_buffer[:bytes_read]
 
         error = GetLastError()
-        if error:
-            log.debug('read_file - error: (%s) "%s"', error, FormatError(error))
-
+        
         if not success and error:
             raise Exception('[WindowsInterop.read_file] (%s) "%s"' % (error, FormatError(error)))
 
