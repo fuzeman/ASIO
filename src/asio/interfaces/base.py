@@ -33,7 +33,7 @@ class Interface(object):
         raise NotImplementedError()
 
     @classmethod
-    def read(cls, fp, buf_size=DEFAULT_BUFFER_SIZE):
+    def read(cls, fp, n=DEFAULT_BUFFER_SIZE):
         raise NotImplementedError()
 
     @classmethod
