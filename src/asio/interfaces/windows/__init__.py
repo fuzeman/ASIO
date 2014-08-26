@@ -83,13 +83,22 @@ class WindowsInterface(Interface):
         )
 
     @classmethod
-    def read(cls, fp, buf_size=DEFAULT_BUFFER_SIZE):
+    def read(cls, fp, n=DEFAULT_BUFFER_SIZE):
         """
         :type fp: asio.interfaces.windows.WindowsFile
-        :type buf_size: int
+        :type n: int
         :rtype: str
         """
-        return WindowsInterop.read_file(fp.handle, buf_size)
+        return WindowsInterop.read(fp.handle, n)
+
+    @classmethod
+    def read_into(cls, fp, b):
+        """
+        :type fp: asio.interfaces.windows.WindowsFile
+        :type b: str
+        :rtype: int
+        """
+        return WindowsInterop.read_into(fp.handle, b)
 
     @classmethod
     def close(cls, fp):
@@ -177,11 +186,16 @@ class WindowsInterface(Interface):
 class WindowsFile(File):
     platform_handler = WindowsInterface
 
-    def __init__(self, handle):
+    def __init__(self, handle, *args, **kwargs):
+        super(WindowsFile, self).__init__(*args, **kwargs)
+
         self.handle = handle
 
         self.file_map = None
         self.map_view = None
+
+    def readinto(self, b):
+        return self.get_handler().read_into(self, b)
 
     def __str__(self):
         return "<asio_windows.WindowsFile file: %s>" % self.handle

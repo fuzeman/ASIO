@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from io import RawIOBase
 import time
 
 DEFAULT_BUFFER_SIZE = 4096
@@ -25,8 +26,11 @@ class ReadTimeoutError(Exception):
     pass
 
 
-class File(object):
+class File(RawIOBase):
     platform_handler = None
+
+    def __init__(self, *args, **kwargs):
+        super(File, self).__init__(*args, **kwargs)
 
     def get_handler(self):
         """
@@ -62,53 +66,27 @@ class File(object):
         """
         return self.get_handler().seek(self, offset, origin)
 
-    def read(self, buf_size=DEFAULT_BUFFER_SIZE):
-        """Read a block of characters from the file
+    def read(self, n=-1):
+        """Read up to n bytes from the object and return them.
 
-        :type buf_size: int
+        :type n: int
         :rtype: str
         """
-        return self.get_handler().read(self, buf_size)
+        return self.get_handler().read(self, n)
 
-    def read_line(self, timeout=None, timeout_type='exception', empty_sleep=1000):
-        """Read a single line from the file
+    def readinto(self, b):
+        """Read up to len(b) bytes into bytearray b and return the number of bytes read."""
+        data = self.read(len(b))
 
-        :rtype: str
-        """
+        if data is None:
+            return None
 
-        stale_since = None
-        line_buf = ""
-
-        while not len(line_buf) or line_buf[-1] != '\n':
-            ch = self.read(1)
-
-            if not ch:
-                if timeout:
-                    # Check if we have exceeded the timeout
-                    if stale_since and (time.time() - stale_since) > timeout:
-                        # Timeout occurred, return the specified result
-                        if timeout_type == 'exception':
-                            raise ReadTimeoutError()
-                        elif timeout_type == 'return':
-                            return None
-                        else:
-                            raise ValueError('Unknown timeout_type "%s"' % timeout_type)
-
-                    # Update stale_since when we hit 'None' reads
-                    if not stale_since:
-                        stale_since = time.time()
-
-                time.sleep(empty_sleep / 1000)
-
-                continue
-            elif timeout:
-                # Reset stale_since as we received a character
-                stale_since = None
-
-            line_buf += ch
-
-        return line_buf[:-1]
+        b[:len(data)] = data
+        return len(data)
 
     def close(self):
         """Close the file handle"""
         return self.get_handler().close(self)
+
+    def readable(self, *args, **kwargs):
+        return True

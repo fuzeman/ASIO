@@ -84,16 +84,16 @@ class PosixInterface(Interface):
         os.lseek(fp.fd, offset, origin)
 
     @classmethod
-    def read(cls, fp, buf_size=DEFAULT_BUFFER_SIZE):
+    def read(cls, fp, n=DEFAULT_BUFFER_SIZE):
         """
         :type fp: asio.interfaces.posix.PosixFile
-        :type buf_size: int
+        :type n: int
         :rtype: str
         """
         r, w, x = select.select([fp.fd], [], [], 5)
 
         if r:
-            return os.read(fp.fd, buf_size)
+            return os.read(fp.fd, n)
 
         return None
 
@@ -108,10 +108,12 @@ class PosixInterface(Interface):
 class PosixFile(File):
     platform_handler = PosixInterface
 
-    def __init__(self, fd):
+    def __init__(self, fd, *args, **kwargs):
         """
         :type fd: asio.file.File
         """
+        super(PosixFile, self).__init__(*args, **kwargs)
+
         self.fd = fd
 
     def __str__(self):
