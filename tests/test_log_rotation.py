@@ -11,15 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import yappi
 
 from asio import ASIO
 
+from io import BufferedReader
 from random import randint
 from threading import Thread
 import logging
 import os
 import time
+import yappi
 
 
 class TestApplication(object):
@@ -59,25 +60,44 @@ class TestApplication(object):
         print "Read starting..."
 
         f = ASIO.open(file_path, opener=False)
+        s = BufferedReader(f)
+
         orig_path = f.get_path()
+        stale_since = None
 
         while True:
             if f is None:
                 print 'Opening file...'
                 f = ASIO.open(file_path, opener=False)
+                s = BufferedReader(f)
 
             # Try read line
-            line = f.read_line(timeout=1, timeout_type='return')
+            line = s.readline()
 
-            if not line:
-                if f.get_path() != orig_path:
+            if line:
+                stale_since = None
+                time.sleep(0.05)
+            else:
+                if stale_since is None:
+                    stale_since = time.time()
+                    time.sleep(0.1)
+                    continue
+                elif (time.time() - stale_since) > 2 and f.get_path() != orig_path:
+                    s.close()
+                    s = None
+
                     f.close()
                     f = None
                 elif not self.writing:
-                    return
+                    break
+                else:
+                    time.sleep(0.1)
+                    continue
 
             print 'read %r' % (line,)
 
+        print 'finished'
+        s.close()
         f.close()
 
     def run(self):
@@ -120,7 +140,7 @@ if __name__ == '__main__':
 
     yappi.get_func_stats().print_all(columns={
         0: ("name", 140),
-        1: ("ncall", 10),
+        1: ("ncall", 20),
         2: ("tsub", 8),
         3: ("ttot", 8),
         4: ("tavg", 8)

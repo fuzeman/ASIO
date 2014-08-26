@@ -14,6 +14,9 @@
 
 from ctypes.wintypes import *
 from ctypes import *
+import logging
+
+log = logging.getLogger(__name__)
 
 
 CreateFileW = windll.kernel32.CreateFileW
@@ -58,6 +61,9 @@ class WindowsInterop(object):
         success = ReadFile(handle, buf, buf_size, byref(bytes_read), NULL)
 
         error = GetLastError()
+        if error:
+            log.debug('read_file - error: (%s) "%s"', error, FormatError(error))
+
         if not success and error:
             raise Exception('[WindowsInterop.read_file] (%s) "%s"' % (error, FormatError(error)))
 

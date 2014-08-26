@@ -177,9 +177,11 @@ class WindowsInterface(Interface):
 class WindowsFile(File):
     platform_handler = WindowsInterface
 
-    def __init__(self, handle):
-        self.handle = handle
+    def __init__(self, handle, *args, **kwargs):
+        super(WindowsFile, self).__init__(*args, **kwargs)
 
+        self.handle = handle
+        
         self.file_map = None
         self.map_view = None
 

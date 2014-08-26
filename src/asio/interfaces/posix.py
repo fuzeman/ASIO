@@ -112,6 +112,8 @@ class PosixFile(File):
         """
         :type fd: asio.file.File
         """
+        super(PosixFile, self).__init__(*args, **kwargs)
+
         self.fd = fd
 
     def __str__(self):
