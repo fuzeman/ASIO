@@ -18,7 +18,7 @@ setup(
     name='ASIO',
     version='1.0',
     package_dir={'': 'src'},
-    packages=[''],
+    packages=find_packages('src', exclude=['tests']),
     url='https://github.com/fuzeman/ASIO',
     license='',
     author='Dean Gardiner',
