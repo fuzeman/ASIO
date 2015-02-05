@@ -16,7 +16,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ASIO',
-    version='1.0',
+    version='1.1',
     package_dir={'': 'src'},
     packages=find_packages('src', exclude=['tests']),
     url='https://github.com/fuzeman/ASIO',
